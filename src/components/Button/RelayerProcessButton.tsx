@@ -5,46 +5,43 @@ import { Button } from '@mui/material'
 import { useState } from "react";
 import { BigNumber } from 'ethers'
 import { prepareWriteContract, writeContract, waitForTransaction} from '@wagmi/core'
-import { useStEvmosContractAddressHook } from '../../hooks/useContractAddress.hook'
-import { stakerABI } from "../../contracts/staker";
+import { useRelayerContractAddressHook } from '../../hooks/useContractAddress.hook'
+import { relayerABI } from "../../contracts/relayer";
 import { parseEther } from 'ethers/lib/utils.js';
 import { ConstructionOutlined } from '@mui/icons-material';
 import { LoadingDialog } from "../Dialog/LoadingDialog"
 
 
-export function ProcessButton({ method, disabled, reverse, valAddress, balance }: any) {
+export function RelayerProcessButton({ isRelayer, disabled, label }: any) {
   const [writing, setWriting] = useState(false)
-  const stEvmosAddresses = useStEvmosContractAddressHook()
+  const registerRelayerAddresses = useRelayerContractAddressHook()
   const { address,  } = useAccount()
 
-  async function stake (amount : any) {
+  async function register () {
     setWriting(true)
-    const depositConfig = await prepareWriteContract({
-      address: stEvmosAddresses,
-      abi: stakerABI,
-      functionName: 'deposit',
-      overrides: {
-        from: address,
-        value: parseEther(amount.toString()),
-      },
-    })
-    const {hash:depositHash} = await writeContract(depositConfig)
-    await waitForTransaction({
-      confirmations: 5,
-      hash: depositHash,
-    })
 
-    const stakeConfig = await prepareWriteContract({
-      address: stEvmosAddresses,
-      abi: stakerABI,
-      functionName: 'staking',
-      args: [
-        valAddress, 
-        parseEther(amount.toString())
-      ],
+    const config = await prepareWriteContract({
+      address: registerRelayerAddresses,
+      abi: relayerABI,
+      functionName: 'register',
     })
-    const {hash:stakeHash} = await writeContract(stakeConfig)
-    await waitForTransaction({hash:stakeHash})
+    const {hash:registerHash} = await writeContract(config)
+    await waitForTransaction({
+      hash: registerHash,
+    })
+  }
+
+  async function quit () {
+    setWriting(true)
+    const config = await prepareWriteContract({
+      address: registerRelayerAddresses,
+      abi: relayerABI,
+      functionName: 'quit',
+    })
+    const {hash:quitHash} = await writeContract(config)
+    await waitForTransaction({
+      hash: quitHash,
+    })
   }
 
   return (
@@ -61,14 +58,22 @@ export function ProcessButton({ method, disabled, reverse, valAddress, balance }
           sx={{
             width: '120px',
           }}
-          onClick={() => {
-            stake(balance)
+          onClick={() => { 
+            console.log(isRelayer)
+            !isRelayer 
+            ? register()
             .finally(() => {
               setWriting(false)
             })
-          }}
+            : quit()
+            .finally(() => {
+              setWriting(false)
+            })
+          }
+        }
+
         >
-          Next
+          {label}
         </Button>
       }
       <LoadingDialog open={writing}/>
