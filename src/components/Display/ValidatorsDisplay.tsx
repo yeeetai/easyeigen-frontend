@@ -29,9 +29,9 @@ export function ValidatorsDisplay() {
     }, []
     )
 
-    const handleRowClick = (id: any) => {
-        // router.push(`/stake/${id}`);
-        console.log(id)
+    const handleRowClick = (address: any) => {
+        router.push({pathname: `/stake`,
+        query: {valAddress: address}});
     };
 
     return (
@@ -42,7 +42,6 @@ export function ValidatorsDisplay() {
                         <TableCell align="center">TOP 5 RANK</TableCell>
                         <TableCell align="right">VALIDATORS</TableCell>
                         <TableCell align="right">VOTING POWER</TableCell>
-                        <TableCell align="right">Commission</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -50,12 +49,11 @@ export function ValidatorsDisplay() {
                         <TableRow
                             key={data.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            onClick={() => { handleRowClick(index) }} hover
+                            onClick={() => { handleRowClick(data.operator_address) }} hover
                         >
                             <TableCell component="th" align="center" scope="row">{data.rank}</TableCell>
                             <TableCell align="right">{data.moniker}</TableCell>
                             <TableCell align="right">{Math.floor(Number(formatted(data.tokens)))}</TableCell>
-                            <TableCell align="right">{data.rate}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

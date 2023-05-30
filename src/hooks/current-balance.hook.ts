@@ -1,6 +1,6 @@
 import { useAccount, useContractRead, useBalance } from "wagmi"
 import { useStEvmosContractAddressHook } from "./useContractAddress.hook"
-import { stEvmosABI } from "../contracts/stEvmos"
+import { stakerABI } from "../contracts/staker"
 import { formatted } from "../utils/ether-big-number"
 
 export function useCurrentStakedBalance() {
@@ -8,12 +8,11 @@ export function useCurrentStakedBalance() {
   const { address } = useAccount()
   const { data: balance } = useContractRead({
     address: stEvmosAddresses,
-    abi: stEvmosABI,
+    abi: stakerABI,
     functionName: 'balanceOf',
     args: [address]
   })
-  console.log(balance)
-  return balance ? formatted(balance).toString() : null
+  return balance ? formatted(balance).toString() : 0
 }
 
 export function useCurrentEvmosBalance() {

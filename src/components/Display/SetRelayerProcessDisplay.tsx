@@ -1,11 +1,11 @@
 import { Button, Grid, TextField, alpha } from "@mui/material";
 import { useState } from "react";
 
-export function SetProcessDisplay({
+export function SetRelayerProcessDisplay({
   onChange
 }: any) {
-  const [isStake, setProcess] = useState(true)
-  const handleButtonClick = (selectedButton: boolean) => {
+  const [isWithdraw, setProcess] = useState(0)
+  const handleButtonClick = (selectedButton: number) => {
     setProcess(selectedButton);
     onChange(selectedButton);
   };
@@ -19,15 +19,15 @@ export function SetProcessDisplay({
           sx={{
             borderRadius: '20px 0 0 20px',
             width: '100%',
-            backgroundColor: isStake === true ? alpha('#000000', 0.8) : 'transparent',
-            color: isStake === true ? '#fff' : alpha('#000000', 0.8),
+            backgroundColor: isWithdraw === 0 ? alpha('#000000', 0.8) : 'transparent',
+            color: isWithdraw === 0 ? '#fff' : alpha('#000000', 0.8),
             '&:hover': {
               backgroundColor: alpha('#bdbdbd', 0.8),
             },
           }}
-          onClick={() => handleButtonClick(true)}
+          onClick={() => handleButtonClick(0)}
         >
-          Stake
+          Register
         </Button>
       </Grid>
       <Grid container item xs={6}>
@@ -37,15 +37,15 @@ export function SetProcessDisplay({
           sx={{
             borderRadius: '0 20px 20px 0',
             width: '100%',
-            backgroundColor: isStake === false ? alpha('#000000', 0.8) : 'transparent',
-            color: isStake === false ? '#fff' : alpha('#000000', 0.8),
+            backgroundColor: isWithdraw === 1 ? alpha('#000000', 0.8) : 'transparent',
+            color: isWithdraw === 1 ? '#fff' : alpha('#000000', 0.8),
             '&:hover': {
               backgroundColor: alpha('#bdbdbd', 0.8),
             },
           }}
-          onClick={() => handleButtonClick(false)}
+          onClick={() => handleButtonClick(1)}
         >
-          Withdraw
+          Quit
         </Button>
       </Grid>
     </Grid >

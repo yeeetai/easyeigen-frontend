@@ -4,10 +4,10 @@ export const stEvmosAddresses = {
   "Goerli": "",
   "hardhat": "",
   "Mantle Testnet": "",
-  "Polygon Mumbai": "0x8E177Fbbf61E4CcCE5759aa4aa3c09c3E6D8a166",
+  "Polygon Mumbai": "",
   "Scroll Alpha": "",
-  "Sepolia": "0x15e3b070B264008A17E73f131DA4BD8803190FbC",
-  "Evmos": "",
+  "Sepolia": "",
+  "Evmos Testnet": "0xda4c3028d22290B337D9bd46B10F8C2522694600",
 }
 
 export const registerRelayerAddresses = {
@@ -19,6 +19,6 @@ export const registerRelayerAddresses = {
   "Polygon Mumbai": "",
   "Scroll Alpha": "",
   "Sepolia": "",
-  "Evmos": "",
+  "Evmos Testnet": "",
 
 }

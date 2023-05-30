@@ -11,15 +11,19 @@ import { CurrentBalanceDisplay } from "../Display/CurrentBalanceDisplay";
 import { RestakedBalanceDisplay } from "../Display/RestakedBalanceDisplay";
 import { GetMaxBalanceDisplay } from "../Display/GetMaxBalanceDisplay";
 import { SetProcessDisplay } from "../Display/SetProcessDisplay";
+import { StakedBalanceDisplay } from "../Display/StakedBalanceDisplay";
 import { useCurrentStakedBalance, useCurrentEvmosBalance } from "../../hooks/current-balance.hook";
+import { SlashForm } from "../Form/SlashForm";
 
-export function RestakeCard() {
+export function SlasherCard(
+    {valAddress}:any
+) {
     const stEvmosAddresses = useStEvmosContractAddressHook()
     const { address } = useAccount()
     const [writing, setWriting] = useState(false)
+    const [balance, setBalance] = useState(useCurrentEvmosBalance())
     const [isWithdraw, setProcess] = useState(0)
     const [amount, setAmount] = useState(0)
-    const balance = useCurrentEvmosBalance()
     const { data: any } = useContractRead({
         address: stEvmosAddresses,
         abi: stakerABI,
@@ -37,39 +41,7 @@ export function RestakeCard() {
             }}
             style={{ borderRadius: "20px" }}
         >
-            <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
-                <div style={{ display: 'flex' }}>
-                    <Image src="/evmos.png" width={30} height={30} style={{ padding: '0 10px 0 0' }} alt="token" />
-                    <Typography display={'inline-block'} sx={{
-                        fontSize: '20px'
-                    }}>
-                        EVMOS
-                    </Typography>
-                </div>
-            </Grid>
-            <Grid container item sx={{ padding: '0 0 20px 0' }} justifyContent="center">
-                <RestakedBalanceDisplay balance={balance} isTokenDisplayed={false} />
-            </Grid>
-
-            <SetProcessDisplay
-                onChange={(e: any) => {
-                    setProcess(e)
-                }}
-            />
-            <GetMaxBalanceDisplay
-                balance={balance}
-                onChange={(e: any) => {
-                    setAmount(e.target.value)
-                }}
-            />
-            <CurrentBalanceDisplay balance={balance} isTokenDisplayed={false} />
-
-
-            <Grid container item xs={12} alignItems={'center'} justifyContent="flex-end">
-                {
-                    <ProcessButton method={isWithdraw} />
-                }
-            </Grid>
+            <SlashForm/>
         </Card>
     )
 }

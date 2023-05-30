@@ -1,31 +1,39 @@
 import { Button, Card, CardContent, Grid, Skeleton, TextField, Typography, alpha } from "@mui/material";
 import { erc20ABI, useAccount, useBalance, useContractRead } from "wagmi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { prepareWriteContract, writeContract, waitForTransaction } from '@wagmi/core'
 import { stakerABI } from "../../contracts/staker";
 import Image from "next/image";
+import { useRouter } from 'next/router';
 import { useStEvmosContractAddressHook } from "../../hooks/useContractAddress.hook";
 import { ProcessButton } from "../Button/ProcessButton";
 import { BigNumber } from "ethers";
 import { CurrentBalanceDisplay } from "../Display/CurrentBalanceDisplay";
+import { CurrentEEEBalanceDisplay } from "../Display/CurrentEEEBalanceDisplay";
 import { RestakedBalanceDisplay } from "../Display/RestakedBalanceDisplay";
 import { GetMaxBalanceDisplay } from "../Display/GetMaxBalanceDisplay";
 import { SetProcessDisplay } from "../Display/SetProcessDisplay";
+import { StakedBalanceDisplay } from "../Display/StakedBalanceDisplay";
 import { useCurrentStakedBalance, useCurrentEvmosBalance } from "../../hooks/current-balance.hook";
 
-export function RestakeCard() {
+export function StakeCard(
+    {valAddress}:any
+) {
     const stEvmosAddresses = useStEvmosContractAddressHook()
     const { address } = useAccount()
     const [writing, setWriting] = useState(false)
-    const [isWithdraw, setProcess] = useState(0)
+    const [stBalance, setStBalance] = useState(useCurrentStakedBalance())
+    const [balance, setBalance] = useState(useCurrentEvmosBalance())
+    const [isStake, setProcess] = useState(true)
     const [amount, setAmount] = useState(0)
-    const balance = useCurrentEvmosBalance()
     const { data: any } = useContractRead({
         address: stEvmosAddresses,
         abi: stakerABI,
         functionName: 'allowance',
         args: [address!, stEvmosAddresses]
     })
+    
+    const router = useRouter()
 
     return (
         <Card
@@ -39,16 +47,15 @@ export function RestakeCard() {
         >
             <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
                 <div style={{ display: 'flex' }}>
-                    <Image src="/evmos.png" width={30} height={30} style={{ padding: '0 10px 0 0' }} alt="token" />
                     <Typography display={'inline-block'} sx={{
                         fontSize: '20px'
                     }}>
-                        EVMOS
+                        Stake
                     </Typography>
                 </div>
             </Grid>
             <Grid container item sx={{ padding: '0 0 20px 0' }} justifyContent="center">
-                <RestakedBalanceDisplay balance={balance} isTokenDisplayed={false} />
+                <StakedBalanceDisplay balance={stBalance} isTokenDisplayed={false} />
             </Grid>
 
             <SetProcessDisplay
@@ -57,17 +64,25 @@ export function RestakeCard() {
                 }}
             />
             <GetMaxBalanceDisplay
-                balance={balance}
+                balance={isStake ? balance: stBalance}
                 onChange={(e: any) => {
-                    setAmount(e.target.value)
+                    setAmount(e)
                 }}
             />
-            <CurrentBalanceDisplay balance={balance} isTokenDisplayed={false} />
-
+            
+            <CurrentBalanceDisplay 
+                type={isStake ? 'EVMOS' : 'EEE'} 
+                balance={isStake ? balance: stBalance } 
+                isTokenDisplayed={false} 
+                method={isStake}
+            />
 
             <Grid container item xs={12} alignItems={'center'} justifyContent="flex-end">
                 {
-                    <ProcessButton method={isWithdraw} />
+                    <ProcessButton 
+                        balance={amount}
+                        method={isStake} 
+                        valAddress={router.query?.valAddress} />
                 }
             </Grid>
         </Card>

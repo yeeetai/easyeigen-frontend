@@ -49,7 +49,8 @@ export function ApplicationBar() {
     return (
         <>
             <AppBar position="static" elevation={0} style={{
-                backgroundColor: '#f1c27d'
+                backgroundColor: '#0f0f0f',
+                boxShadow: '0 0 20px 8px rgba(124,124,124,.7)'
             }}>
                 <Container maxWidth="xl">
                     <Toolbar
@@ -78,7 +79,8 @@ export function ApplicationBar() {
                                     {pages.map((page) => (
                                         <Tab
                                             sx={{
-                                                textTransform: 'none'
+                                                textTransform: 'none',
+                                                color: '#e3e3e3'
                                             }}
                                             component="a"
                                             key={page.label}

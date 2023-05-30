@@ -10,16 +10,20 @@ import { BigNumber } from "ethers";
 import { CurrentBalanceDisplay } from "../Display/CurrentBalanceDisplay";
 import { RestakedBalanceDisplay } from "../Display/RestakedBalanceDisplay";
 import { GetMaxBalanceDisplay } from "../Display/GetMaxBalanceDisplay";
-import { SetProcessDisplay } from "../Display/SetProcessDisplay";
+import { SetRelayerProcessDisplay } from "../Display/SetRelayerProcessDisplay";
+import { StakedBalanceDisplay } from "../Display/StakedBalanceDisplay";
 import { useCurrentStakedBalance, useCurrentEvmosBalance } from "../../hooks/current-balance.hook";
 
-export function RestakeCard() {
+export function RelayerCard(
+    {valAddress}:any
+) {
     const stEvmosAddresses = useStEvmosContractAddressHook()
     const { address } = useAccount()
     const [writing, setWriting] = useState(false)
+    const [stBalance, setStBalance] = useState(useCurrentStakedBalance())
+    const [balance, setBalance] = useState(useCurrentEvmosBalance())
     const [isWithdraw, setProcess] = useState(0)
     const [amount, setAmount] = useState(0)
-    const balance = useCurrentEvmosBalance()
     const { data: any } = useContractRead({
         address: stEvmosAddresses,
         abi: stakerABI,
@@ -39,19 +43,18 @@ export function RestakeCard() {
         >
             <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
                 <div style={{ display: 'flex' }}>
-                    <Image src="/evmos.png" width={30} height={30} style={{ padding: '0 10px 0 0' }} alt="token" />
                     <Typography display={'inline-block'} sx={{
                         fontSize: '20px'
                     }}>
-                        EVMOS
+                        Relayer
                     </Typography>
                 </div>
             </Grid>
             <Grid container item sx={{ padding: '0 0 20px 0' }} justifyContent="center">
-                <RestakedBalanceDisplay balance={balance} isTokenDisplayed={false} />
+                <StakedBalanceDisplay balance={stBalance} isTokenDisplayed={false} />
             </Grid>
 
-            <SetProcessDisplay
+            <SetRelayerProcessDisplay
                 onChange={(e: any) => {
                     setProcess(e)
                 }}
@@ -59,10 +62,10 @@ export function RestakeCard() {
             <GetMaxBalanceDisplay
                 balance={balance}
                 onChange={(e: any) => {
-                    setAmount(e.target.value)
+                    setAmount(e)
                 }}
             />
-            <CurrentBalanceDisplay balance={balance} isTokenDisplayed={false} />
+            <CurrentBalanceDisplay balance={balance} isTokenDisplayed={false} method={isWithdraw}/>
 
 
             <Grid container item xs={12} alignItems={'center'} justifyContent="flex-end">

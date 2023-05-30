@@ -6,7 +6,8 @@ import { useStEvmosContractAddressHook } from "../../hooks/useContractAddress.ho
 export function CurrentBalanceDisplay({
   size = '14px',
   balance,
-  isTokenDisplayed = true
+  isTokenDisplayed = true,
+  type
 }: any) {
   return (
     <Typography
@@ -16,7 +17,7 @@ export function CurrentBalanceDisplay({
         padding: '0 0 20px 0'
       }}
     >
-      Balance: {balance}
+      { type } Balance: {balance}
     </Typography>
   )
 }

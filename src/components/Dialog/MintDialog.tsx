@@ -8,12 +8,12 @@ export function MintDialog({
   open,
   onClose
 }: any) {
-  // const stEthAddresses = useStEvmosContractAddressHook()
+  // const stEvmosAddresses = useStEvmosContractAddressHook()
   // const [amount, setAmount] = useState(0)
   // async function mint() {
   //   const feeData = await fetchFeeData()
   //   const config = await prepareWriteContract({
-  //     address: stEthAddresses,
+  //     address: stEvmosAddresses,
   //     abi: DaiABI,
   //     functionName: 'mint',
   //     args: [amount, { gasLimit: "68658" }]

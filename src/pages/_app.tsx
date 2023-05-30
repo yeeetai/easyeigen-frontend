@@ -14,14 +14,14 @@ import { ApplicationBar } from '../components/Bar/AppBar'
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#6C221C',
+            main: '#f7f7f7',
         },
         secondary: {
-            main: grey[200],
+            main: '#f7f7f7',
         },
         error: {
             // This is green.A700 as hex.
-            main: '#ef5350',
+            main: '#bdbdbd',
         },
     },
 });

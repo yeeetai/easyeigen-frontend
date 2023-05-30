@@ -3,7 +3,7 @@ import { formatted } from "../../utils/ether-big-number";
 import { useAccount, useContractRead, useToken } from "wagmi";
 import { useStEvmosContractAddressHook } from "../../hooks/useContractAddress.hook";
 
-export function ReStakedBalanceDisplay({
+export function RestakedBalanceDisplay({
   size = '18px',
   balance,
   isTokenDisplayed = true
@@ -15,7 +15,7 @@ export function ReStakedBalanceDisplay({
         fontSize: size,
       }}
     >
-      ReStaked: {balance}
+      Restaked: {balance}
     </Typography>
   )
 }

@@ -27,11 +27,9 @@ export const makeChain = (name: string, rpc: string, id: number) => {
 const defaultChains: Chain[] = [
   goerli,
   sepolia,
-  polygonMumbai,
   gnosisChiado,
-  celoAlfajores,
-  makeChain('Mantle Testnet', 'https://rpc.testnet.mantle.xyz', 5001),
-  makeChain('Scroll Alpha', 'https://alpha-rpc.scroll.io/l2', 534353),
+  makeChain('Evmos', 'https://eth.bd.evmos.org:8545', 9001),
+  makeChain('Evmos Testnet', 'https://eth.bd.evmos.dev:8545', 9000),
 ];
 
 const { chains, provider, webSocketProvider } = configureChains(
@@ -45,7 +43,7 @@ const { chains, provider, webSocketProvider } = configureChains(
 export const client = createClient(
   getDefaultClient({
     autoConnect: true,
-    appName: 'Zk-fi',
+    appName: 'EEF',
     provider,
     webSocketProvider,
     chains,

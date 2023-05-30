@@ -1,12 +1,15 @@
 import { Button, Grid, TextField, alpha } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function GetMaxBalanceDisplay({
   balance,
   onChange
 }: any) {
   const [amount, setAmount] = useState(0)
-
+  useEffect(() => {
+    setAmount(0)
+    onChange(0)
+  },[balance])
   return (
     <Grid container item justifyContent="space-between" alignItems='center' sx={{ padding: '0 0 5px 0' }}>
       <Grid item xs={9}>
@@ -17,7 +20,7 @@ export function GetMaxBalanceDisplay({
           onChange={(e) => {
             const value = e.target.value
             setAmount(Number(value))
-            onChange(e)
+            onChange(Number(value))
           }}
           sx={{
             ml: '0px',
@@ -33,11 +36,16 @@ export function GetMaxBalanceDisplay({
             borderRadius: '20px',
           }}
           style={{
-            color: alpha("#6C221C", 0.8),
-            borderColor: alpha("#6C221C", 0.8),
+            background: '#7c7c7c',
+            color: alpha("#292929", 0.8),
+            borderColor: alpha("#292929", 0.8),
+            borderWidth: '2px',
             textTransform: 'none',
           }}
-          onClick={() => setAmount(Number(balance))}
+          onClick={() => {
+            setAmount(Number(balance))
+            onChange(Number(balance))
+          }}
         >
           Max
         </Button>
