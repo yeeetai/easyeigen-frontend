@@ -1,19 +1,12 @@
 import { Button, Card, CardContent, Grid, Skeleton, TextField, Typography, alpha } from "@mui/material";
-import { erc20ABI, useAccount, useBalance, useContractRead } from "wagmi";
+import { useAccount, useBalance, useContractRead } from "wagmi";
 import { useEffect, useState } from "react";
-import { prepareWriteContract, writeContract, waitForTransaction } from '@wagmi/core'
 import { relayerABI } from "../../contracts/relayer";
-import Image from "next/image";
 import { useRelayerContractAddressHook } from "../../hooks/useContractAddress.hook";
 import { RelayerProcessButton } from "../Button/RelayerProcessButton";
 import { BigNumber } from "ethers";
-import { CurrentBalanceDisplay } from "../Display/CurrentBalanceDisplay";
-import { RestakedBalanceDisplay } from "../Display/RestakedBalanceDisplay";
-import { GetMaxBalanceDisplay } from "../Display/GetMaxBalanceDisplay";
-import { SetRelayerProcessDisplay } from "../Display/SetRelayerProcessDisplay";
-import { StakedBalanceDisplay } from "../Display/StakedBalanceDisplay";
 import { useCurrentStakedBalance, useCurrentEvmosBalance } from "../../hooks/current-balance.hook";
-import { useCurrentRole } from "../../hooks/current-role.hook";
+import { useCurrentRole, useBanCheck } from "../../hooks/current-role.hook";
 
 export function RelayerCard(
     {valAddress}:any
@@ -22,7 +15,7 @@ export function RelayerCard(
     const { address } = useAccount()
     const [stBalance, setStBalance] = useState(useCurrentStakedBalance())
     const [isRelayer, setProcess] = useState(useCurrentRole())
-    console.log(useCurrentStakedBalance())
+    const [isBan, setBanState] = useState(useBanCheck())
 
     return (
         <Card
@@ -43,8 +36,10 @@ export function RelayerCard(
                     </Typography>
                 </div>
             </Grid>
-            { isRelayer ? 
-                <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
+            { !isBan 
+            ? <>
+            { isRelayer 
+                ? <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
                     <div style={{ display: 'flex' }}>
                         <Typography display={'inline-block'} sx={{
                             fontSize: '20px'
@@ -53,19 +48,48 @@ export function RelayerCard(
                         </Typography>
                     </div>
                 </Grid>
-                : <CurrentBalanceDisplay 
-                        type='EEE' 
-                        balance={stBalance}
-                        isTokenDisplayed={false} 
-                    />} 
+                : <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
+                    <div style={{ display: 'flex' }}>
+                        <Typography display={'inline-block'} sx={{
+                            fontSize: '20px'
+                        }}>
+                            { Number(stBalance) > 1
+                                ?   <>
+                                    You have {stBalance} EE
+                                    <br/>
+                                    You can register relayer 🥳 
+                                    </>
+                                :   <>
+                                    You need to have more than1 EE
+                                    </>
+                            }
+                            
+                        </Typography>
+                    </div>
+                </Grid>} 
             <Grid container item xs={12} alignItems={'center'} justifyContent="center">
                 {
-                    <RelayerProcessButton 
-                        isRelayer={isRelayer} 
-                        label={isRelayer ? 'Quit' : 'Register' }
-                        />
+                    Number(stBalance) > 1
+                    ? <RelayerProcessButton 
+                    isRelayer={isRelayer} 
+                    label={isRelayer ? 'Quit' : 'Register' }
+                    />
+                    : null
                 }
             </Grid>
+            </>
+            :
+            <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
+                    <div style={{ display: 'flex' }}>
+                        <Typography display={'inline-block'} sx={{
+                            fontSize: '20px'
+                        }}>
+                            You are a bad guy
+                        </Typography>
+                    </div>
+                </Grid>
+            }
+            
         </Card>
     )
 }

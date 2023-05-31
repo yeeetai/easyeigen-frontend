@@ -5,8 +5,9 @@ import { Button } from '@mui/material'
 import { useState } from "react";
 import { BigNumber } from 'ethers'
 import { prepareWriteContract, writeContract, waitForTransaction} from '@wagmi/core'
-import { useRelayerContractAddressHook } from '../../hooks/useContractAddress.hook'
+import { useRelayerContractAddressHook, useStEvmosContractAddressHook } from '../../hooks/useContractAddress.hook'
 import { relayerABI } from "../../contracts/relayer";
+import { stakerABI } from "../../contracts/staker";
 import { parseEther } from 'ethers/lib/utils.js';
 import { ConstructionOutlined } from '@mui/icons-material';
 import { LoadingDialog } from "../Dialog/LoadingDialog"
@@ -16,9 +17,22 @@ export function RelayerProcessButton({ isRelayer, disabled, label }: any) {
   const [writing, setWriting] = useState(false)
   const registerRelayerAddresses = useRelayerContractAddressHook()
   const { address,  } = useAccount()
+  const stEvmosAddresses = useStEvmosContractAddressHook()
+
 
   async function register () {
     setWriting(true)
+    const approveConfig = await prepareWriteContract({
+      address: stEvmosAddresses,
+      abi: stakerABI,
+      functionName: 'approve',
+      args: [registerRelayerAddresses.toString(), parseEther('1')],
+    })
+    const {hash:approveHash} = await writeContract(approveConfig)
+    await waitForTransaction({
+      confirmations: 3,
+      hash: approveHash,
+    })
 
     const config = await prepareWriteContract({
       address: registerRelayerAddresses,
@@ -27,6 +41,7 @@ export function RelayerProcessButton({ isRelayer, disabled, label }: any) {
     })
     const {hash:registerHash} = await writeContract(config)
     await waitForTransaction({
+      confirmations: 3,
       hash: registerHash,
     })
   }
@@ -40,6 +55,7 @@ export function RelayerProcessButton({ isRelayer, disabled, label }: any) {
     })
     const {hash:quitHash} = await writeContract(config)
     await waitForTransaction({
+      confirmations: 3,
       hash: quitHash,
     })
   }
@@ -71,7 +87,6 @@ export function RelayerProcessButton({ isRelayer, disabled, label }: any) {
             })
           }
         }
-
         >
           {label}
         </Button>

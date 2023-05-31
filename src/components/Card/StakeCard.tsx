@@ -70,7 +70,7 @@ export function StakeCard(
             />
             
             <CurrentBalanceDisplay 
-                type={isStake ? 'EVMOS' : 'EEE'} 
+                type={isStake ? 'EVMOS' : 'EE'} 
                 balance={isStake ? balance: stBalance } 
                 isTokenDisplayed={false} 
                 method={isStake}
