@@ -61,7 +61,7 @@ export function ApplicationBar() {
                         }}
                     >
                         <Image
-                            src="/EEF_LOGO.png"
+                            src="./EEF_LOGO.png"
                             alt="logo"
                             width={100}
                             height={90}

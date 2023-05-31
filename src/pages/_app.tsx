@@ -36,7 +36,7 @@ function App({ Component, pageProps }: AppProps) {
                 <ConnectKitProvider>
                     <NextHead>
                         <title>EZEigen</title>
-                        <link rel="shortcut icon" href="/favicon.ico" />
+                        <link rel="shortcut icon" href="./favicon.ico" />
                     </NextHead>
                     <ApplicationBar />
                     <Container>

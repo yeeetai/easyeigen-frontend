@@ -6,6 +6,11 @@ export const relayerABI = [
         "internalType": "address",
         "name": "_slashVerifierAddress",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_eevmos",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -82,6 +87,25 @@ export const relayerABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "relayer",
+        "type": "address"
+      }
+    ],
+    "name": "checkRelayer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "eevmos",
     "outputs": [
@@ -89,6 +113,25 @@ export const relayerABI = [
         "internalType": "contract IERC20",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "relayer",
+        "type": "address"
+      }
+    ],
+    "name": "getRelayer",
+    "outputs": [
+      {
+        "internalType": "uint256[4]",
+        "name": "",
+        "type": "uint256[4]"
       }
     ],
     "stateMutability": "view",
