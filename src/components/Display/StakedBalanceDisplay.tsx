@@ -15,7 +15,7 @@ export function StakedBalanceDisplay({
         fontSize: size,
       }}
     >
-      EEE Staked: {balance}
+      Your EE: {balance}
     </Typography>
   )
 }

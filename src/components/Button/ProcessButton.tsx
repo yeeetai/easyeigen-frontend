@@ -29,7 +29,6 @@ export function ProcessButton({ method, disabled, reverse, valAddress, balance }
       },
     })
     const {hash:depositHash} = await writeContract(depositConfig)
-    // await waitForTransaction({hash:depositHash})
     await waitForTransaction({
       confirmations: 5,
       hash: depositHash,
@@ -48,6 +47,26 @@ export function ProcessButton({ method, disabled, reverse, valAddress, balance }
     await waitForTransaction({hash:stakeHash})
   }
 
+  async function withdraw (amount : any) {
+    setWriting(true)
+    console.log(valAddress, parseEther(amount.toString()))
+    // const withdrawConfig = await prepareWriteContract({
+    //   address: stEvmosAddresses,
+    //   abi: stakerABI,
+    //   functionName: 'unstakeTokens',
+    //   args: [
+    //     valAddress, 
+    //     parseEther(amount.toString())
+    //   ],
+    // })
+    // const {hash:withdrawHash} = await writeContract(withdrawConfig)
+    // await waitForTransaction({
+    //   confirmations: 5,
+    //   hash: withdrawHash,
+    // })
+  }
+  
+
   return (
     <>
       {
@@ -63,10 +82,15 @@ export function ProcessButton({ method, disabled, reverse, valAddress, balance }
             width: '120px',
           }}
           onClick={() => {
-            stake(balance)
-            .finally(() => {
-              setWriting(false)
-            })
+            method 
+              ? stake(balance)
+              .finally(() => {
+                setWriting(false)
+              })
+              : withdraw(balance)
+              .finally(() => {
+                setWriting(false)
+              })
           }}
         >
           Next

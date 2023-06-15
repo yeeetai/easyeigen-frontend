@@ -1,129 +1,113 @@
 import { Button, Grid, Skeleton, TextField, alpha, Typography } from "@mui/material";
 import { prepareWriteContract, writeContract, waitForTransaction } from "@wagmi/core"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { invokeFormat } from "../../utils/ether-big-number";
+import { useRelayerContractAddressHook } from "../../hooks/useContractAddress.hook";
+import { relayerABI } from "../../contracts/relayer";
+import { LoadingDialog } from "../Dialog/LoadingDialog"
+import { generateProof } from "../../services/proof.service";
+import { useContractRead } from "wagmi";
+import { readContract } from "@wagmi/core";
 
 export function SlashForm({
-  loading,
-  onStart,
-  onComplete,
 }: any) {
-  const [amount, setAmount] = useState(0)
+  const [address, setAddress] = useState('')
+  const [loading, setLoading] = useState(false)
   const [merkle, setMerkle] = useState('')
-  const [transactionLoading, setTransactionLoading] = useState(false);
-  // const zkafiAddress = useZkafiContractAddressHook();
-  // async function proof(amount: number, merkle: any) {
-  //   setTransactionLoading(true);
-  //   const zkProof = await generateProof(
-  //     invokeFormat(amount.toString()).toString(),
-  //     merkle
-  //   )
-  //   const config = await prepareWriteContract({
-  //     address: zkafiAddress,
-  //     abi: zkafiABI,
-  //     functionName: "noPermissionBorrow",
-  //     args: [zkProof],
-  //   });
-  //   const {hash} = await writeContract(config)
-  //   await waitForTransaction({hash}) 
-  // }
+  const registerRelayerAddresses = useRelayerContractAddressHook()
+
+  async function slash ( relayerAddress : string) {
+    
+    setLoading(true)
+    const value:any = await readContract({
+      address: registerRelayerAddresses,
+      abi: relayerABI,
+      functionName: 'getRelayer',
+      args:[relayerAddress]
+    })
+
+    console.log('value:',value[0])
+
+      const circuitInputs = {
+      relayer: value[0].toString(),
+      receiver: value[1].toString(),
+      amount: value[2].toString(),
+      hash: value[3].toString(),
+    }
+
+    const proofData = await generateProof(
+      circuitInputs
+    )
+    console.log('proof:', proofData)
+    const config = await prepareWriteContract({
+      address: registerRelayerAddresses,
+      abi: relayerABI,
+      functionName: 'slash',
+      args:[proofData, relayerAddress]
+    })
+    const {hash:registerHash} = await writeContract(config)
+    await waitForTransaction({
+      hash: registerHash,
+    })
+  }
+
   return (
-    <Grid container rowSpacing={4} justifyContent="center">
-       <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
-                <div style={{ display: 'flex' }}>
-                    <Typography display={'inline-block'} sx={{
-                        fontSize: '20px'
-                    }}>
-                        Slasher
-                    </Typography>
-                </div>
-            </Grid>
-      <Grid container item columnSpacing={2} alignItems="center">
-        <Grid item>
-          <Button
-            variant="outlined"
-            component="label"
-            style={{
-              color: alpha("#000000", 0.8),
-              borderColor: alpha("#6C221C", 0.8),
-              textTransform: 'none',
+    <>
+      <Grid container rowSpacing={4} justifyContent="center">
+        <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
+                  <div style={{ display: 'flex' }}>
+                      <Typography display={'inline-block'} sx={{
+                          fontSize: '20px'
+                      }}>
+                          Slasher
+                      </Typography>
+                  </div>
+              </Grid>
+        <Grid container item>
+          <TextField
+            type="string"
+            label="Relayer Address"
+            placeholder="enter address"
+            onChange={(e) => {
+              setAddress(e.target.value)
             }}
-            sx={{
-              width: '150px',
-            }}
-          >
-            Upload Proof File
-            <input
-              type="file"
-              hidden
-              onChange={(e: any) => {
-                if (!window.FileReader) return; // Browser is not compatible
-
-                var reader = new FileReader();
-
-                reader.onload = function (evt: any) {
-                  if (evt.target.readyState != 2) return;
-                  if (evt.target.error) {
-                    alert('Error while reading file');
-                    return
-                  }
-                  // setMerkle(JSON.parse(evt.target.result))
-                }
-                reader.readAsText(e.target.files[0]);
-              }}
-            />
-          </Button>
-        </Grid>
-        <Grid item>
-          {
-            merkle ? 'proof uploaded' : 'proof not uploaded'
-          }
-        </Grid>
-      </Grid>
-      <Grid container item>
-        <TextField
-          type="string"
-          label="Relayer Address"
-          placeholder="enter address"
-          onChange={(e) => {
-            setAmount(Number(e.target.value))
-          }}
-          disabled={loading}
-          style={{
-            width: '100%'
-          }}
-        />
-      </Grid>
-      <Grid container item xs={12} columnSpacing={3} justifyContent="flex-end">
-        <Grid item>
-          <Button
-            variant="contained"
             disabled={loading}
             style={{
-              textTransform: 'none',
+              width: '100%'
             }}
-            sx={{
-              width: '120px',
-            }}
-            onClick={() => {
-              onStart()
-              // proof(amount, merkle)
-              //   .finally(() => {
-              //     onComplete()
-              //     setTransactionLoading(false)
-              //   })
-            }}
-          >
-            {
-              loading ? (
-                <>
-                  Slash Checking...
-                </>)
-                : 'Slash'
-            }
-          </Button>
+          />
+        </Grid>
+        <Grid container item xs={12} columnSpacing={3} justifyContent="center">
+          <Grid item>
+            <Button
+              variant="contained"
+              disabled={loading}
+              color="warning"
+              style={{
+                textTransform: 'none',
+              }}
+              sx={{
+                width: '120px',
+              }}
+              onClick={() => {
+                slash(address)
+                  .finally(() => {
+                  setLoading(false)
+                })
+              }}
+            >
+              {
+                loading ? (
+                  <>
+                    Slash Checking...
+                  </>)
+                  : 'Slash'
+              }
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+      <LoadingDialog open={loading}/>
+    </>
   )
 }

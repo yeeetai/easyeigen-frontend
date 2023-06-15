@@ -9,8 +9,6 @@ import { useStEvmosContractAddressHook } from "../../hooks/useContractAddress.ho
 import { ProcessButton } from "../Button/ProcessButton";
 import { BigNumber } from "ethers";
 import { CurrentBalanceDisplay } from "../Display/CurrentBalanceDisplay";
-import { CurrentEEEBalanceDisplay } from "../Display/CurrentEEEBalanceDisplay";
-import { RestakedBalanceDisplay } from "../Display/RestakedBalanceDisplay";
 import { GetMaxBalanceDisplay } from "../Display/GetMaxBalanceDisplay";
 import { SetProcessDisplay } from "../Display/SetProcessDisplay";
 import { StakedBalanceDisplay } from "../Display/StakedBalanceDisplay";
@@ -71,7 +69,7 @@ export function StakeCard(
             />
             
             <CurrentBalanceDisplay 
-                type={isStake ? 'EVMOS' : 'EEE'} 
+                type={isStake ? 'EVMOS' : 'EE'} 
                 balance={isStake ? balance: stBalance } 
                 isTokenDisplayed={false} 
                 method={isStake}

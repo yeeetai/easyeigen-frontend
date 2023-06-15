@@ -19,6 +19,6 @@ export const registerRelayerAddresses = {
   "Polygon Mumbai": "",
   "Scroll Alpha": "",
   "Sepolia": "",
-  "Evmos Testnet": "",
+  "Evmos Testnet": "0x7eb88f14f90d86c5F28fD918Fad8620941c9f65B",
 
 }

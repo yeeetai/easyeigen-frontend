@@ -23,7 +23,7 @@ export function DashboardCard() {
         >
             <Grid container item alignItems={'center'} justifyContent="center" sx={{ padding: '0 0 20px 0' }}>
                 <div style={{ display: 'flex' }}>
-                    <Image src="/evmos.png" width={30} height={30} style={{ padding: '0 10px 0 0' }} alt="token" />
+                    <Image src="./evmos.png" width={30} height={30} style={{ padding: '0 10px 0 0' }} alt="token" />
                     <Typography display={'inline-block'} sx={{
                         fontSize: '20px'
                     }}>

@@ -17,7 +17,7 @@ export function TotalStakedBalanceDisplay({
         textAlign: 'center',
       }}
     >
-      <div>EEE Staked</div>
+      <div>Your EE</div>
       <div style={{ fontWeight: 'bold' }}>{balance}</div>
     </Typography>
   )
